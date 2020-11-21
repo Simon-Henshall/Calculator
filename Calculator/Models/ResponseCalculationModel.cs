@@ -2,6 +2,6 @@ namespace Calculator.Models
 {
     public class ResponseCalculationModel
     {
-        public double Result { get; set; } // The calculated value
+        public dynamic Result { get; set; } // The calculated value
     }
 }

@@ -78,8 +78,20 @@ body {
     padding: 5px;
 }
 
-#calculator > .button {
-    flex: 1 0 calc(25% - 10px);
+#calculator #output {
+    padding: 15px;
+    height: 100px;
+    background: white;
+    border-radius: 20px;
+    cursor: initial;
+    font-size: 10vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#calculator .button {
+    flex: 1 0 calc((100% / 3) - 10px);
     background-color: #808080;
     margin: 5px;
     text-align: center;
@@ -89,19 +101,28 @@ body {
     cursor: pointer;
 }
 
-#calculator > .operand {
+#calculator .small {
+    flex: 1 0 calc(25% - 10px);
+}
+
+#calculator .operand {
     color: white;
 }
 
-#calculator > .operator {
+#calculator .operator {
     color: lime;
 }
 
-#calculator > #clear {
+#calculator #clear {
     color: red;
 }
 
-#calculator > #equals {
+#calculator #equals {
     color: white;
     background-color: green;
+}
+
+#calculator .break {
+    flex-basis: 100%;
+    height: 0;
 }
