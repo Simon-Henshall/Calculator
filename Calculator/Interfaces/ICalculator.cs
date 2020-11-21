@@ -6,6 +6,6 @@ namespace Calculator.Interfaces
 {
     public interface ICalculator
     {
-        Task<IActionResult> Calculate(RequestCalculationModel request);
+        Task<ResponseCalculationModel> Calculate(RequestCalculationModel request);
     }
 }
