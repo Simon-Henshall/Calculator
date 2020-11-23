@@ -7,6 +7,7 @@ using System.Web.Http;
 namespace Calculator.Controllers
 {
     [ApiController]
+    [ValidateModel]
     [Microsoft.AspNetCore.Mvc.Route("calculator")]
     public class CalculatorController : Controller
     {

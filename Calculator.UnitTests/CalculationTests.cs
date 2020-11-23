@@ -7,6 +7,7 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System;
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Calculator.UnitTests
 {
@@ -40,11 +41,13 @@ namespace Calculator.UnitTests
 
             // Chek the inputs
             var request = svc.Calculate(testData);
-            if (request is Microsoft.AspNetCore.Mvc.BadRequestResult)
+            if (request is BadRequestObjectResult)
             {
-                // ToDo: Potential check here for bad request
+                var requestValue = (ObjectResult)request;
+                Assert.That(requestValue.Value.ToString().Contains("Invalid symbol"));
                 return;
             }
+
             Assert.That(testData.Operand1, Is.TypeOf<int>());
             Assert.That(testData.Symbol, Is.TypeOf<string>());
             Assert.That(testData.Operand2, Is.TypeOf<int>());
