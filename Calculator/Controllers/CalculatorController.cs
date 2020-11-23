@@ -2,16 +2,15 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Runtime.CompilerServices;
-using System.Web.Http;
 
 namespace Calculator.Controllers
 {
     [ApiController]
     [ValidateModel]
-    [Microsoft.AspNetCore.Mvc.Route("calculator")]
+    [Route("calculator")]
     public class CalculatorController : Controller
     {
-        [Microsoft.AspNetCore.Mvc.HttpPost("calculate")]
+        [HttpPost("calculate")]
         public ActionResult Calculate(RequestCalculationModel request)
         {
             try

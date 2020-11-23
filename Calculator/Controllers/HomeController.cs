@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
+﻿using Calculator.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Calculator.Models;
+using System.Diagnostics;
 
 namespace Calculator.Controllers
 {
