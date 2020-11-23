@@ -37,35 +37,29 @@ namespace Calculator.UnitTests
                 .Build();
 
             var svc = new CalculatorController();
-
-
-            // Chek the inputs
             var request = svc.Calculate(testData);
-            if (request is BadRequestObjectResult)
+
+            // Check invalid inputs
+            if (request is BadRequestObjectResult && Array.IndexOf(validSymbols, testedSymbol) == -1)
             {
                 var requestValue = (ObjectResult)request;
+                Assert.That(requestValue.StatusCode == (int)HttpStatusCode.BadRequest);
                 Assert.That(requestValue.Value.ToString().Contains("Invalid symbol"));
                 return;
             }
 
+            // Check valid inputs
             Assert.That(testData.Operand1, Is.TypeOf<int>());
             Assert.That(testData.Symbol, Is.TypeOf<string>());
             Assert.That(testData.Operand2, Is.TypeOf<int>());
 
             // ToDo: There must be a better way to convert this
             var stringResult = JsonConvert.SerializeObject(request);
+            var response = JsonConvert.DeserializeObject<ResponseModel>(stringResult);
+            var calculationResponse = response.Value.Result;
 
             // Check the output
-            var response = JsonConvert.DeserializeObject<ResponseModel>(stringResult);
-            if(Array.IndexOf(validSymbols, testedSymbol) == -1)
-            {
-                Assert.That(int.Parse(response.StatusCode) == (int)HttpStatusCode.BadRequest);
-            }
-            else
-            {
-                var calculationResponse = response.Value.Result;
-                Assert.That(calculationResponse, Is.TypeOf<double>());
-            }
+            Assert.That(calculationResponse, Is.TypeOf<double>());
         }
     }
 }
