@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace Calculator.Models
+namespace Calculator.API.Models
 {
     public class SuccessResponseModel<T> : ResponseModel
     {

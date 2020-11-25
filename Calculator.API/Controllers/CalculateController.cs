@@ -2,7 +2,7 @@
 using System;
 using System.Net;
 using System.Web.Http;
-using Calculator.Models;
+using Calculator.API.Models;
 using System.Net.Http;
 
 namespace Calculator.API.Controllers

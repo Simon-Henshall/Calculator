@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 
-namespace Calculator.Models
+namespace Calculator.API.Models
 {
     public class BadRequestResponseModel : ResponseModel
     {

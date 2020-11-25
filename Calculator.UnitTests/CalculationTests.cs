@@ -1,6 +1,5 @@
-using Calculator.Controllers;
-using Calculator.Models;
-using Calculator.Interfaces;
+using Calculator.API.Controllers;
+using Calculator.API.Models;
 using FizzWare.NBuilder;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -36,7 +35,7 @@ namespace Calculator.UnitTests
                 .And(r => r.Operand2 = random.Next())
                 .Build();
 
-            var svc = new CalculatorController();
+            var svc = new CalculateController();
             var request = svc.Calculate(testData);
 
             // Check invalid inputs
@@ -56,7 +55,7 @@ namespace Calculator.UnitTests
             // ToDo: There must be a better way to convert this
             var stringResult = JsonConvert.SerializeObject(request);
             var response = JsonConvert.DeserializeObject<ResponseModel>(stringResult);
-            var calculationResponse = response.Value.Result;
+            var calculationResponse = response.Messages;
 
             // Check the output
             Assert.That(calculationResponse, Is.TypeOf<double>());

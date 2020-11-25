@@ -1,4 +1,4 @@
-namespace Calculator.Models
+namespace Calculator.API.Models
 {
     public class RequestCalculationModel
     {

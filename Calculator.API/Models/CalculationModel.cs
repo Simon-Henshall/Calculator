@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Calculator.Models
+namespace Calculator.API.Models
 {
     public class CalculationModel
     {
