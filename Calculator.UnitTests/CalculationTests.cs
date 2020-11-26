@@ -4,7 +4,6 @@ using FizzWare.NBuilder;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System;
-using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Results;
 
@@ -17,6 +16,25 @@ namespace Calculator.UnitTests
         // ToDo: Implement logging
         private ILogger _logger;
 
+        public dynamic ParseInput(string input)
+        {
+            var calculator = new CalculateController()
+            {
+                Request = new System.Net.Http.HttpRequestMessage(),
+                Configuration = new HttpConfiguration()
+            };
+
+            var testInput = new InputModel
+            {
+                Input = input
+            };
+
+            var request = calculator.ParseInput(testInput) as OkNegotiatedContentResult<SuccessResponseModel>;
+            var result = request.Content.Result;
+
+            return result;
+        }
+        
         public dynamic Calculate(int operand1, string symbol, int operand2)
         {
             var testData = Builder<RequestCalculationModel>
@@ -42,24 +60,6 @@ namespace Calculator.UnitTests
     [TestFixture]
     public class SuccessTests : BaseTest
     {
-        public List<T> CreateOperands<T>(params T[] testOperands)
-        {
-            Assert.That(testOperands, Is.TypeOf<int>());
-            return new List<T>(testOperands);
-        }
-
-        //public Symbols[] CreateOperators(params string[] testOperators)
-        //{
-        //    var validSymbols = new Symbols[0];
-        //    validSymbols.Append("+");
-        //    foreach (string testOperator in testOperators)
-        //    {
-        //        Assert.That(validSymbols, Contains.Item(testOperator));
-        //    }
-            
-        //    return validSymbols;
-        //}
-
         [Test]
         public void TestAddition()
         {
@@ -103,6 +103,23 @@ namespace Calculator.UnitTests
             Assert.That(result, Is.TypeOf<double>());
             Assert.That(result % 1 != 0);
             
+        }
+    }
+    [TestFixture]
+    public class FailureTests : BaseTest
+    {
+        [Test]
+        public void NoOperand()
+        {
+            var ex = Assert.Throws<NullReferenceException>(() => ParseInput("X"));
+            Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
+        }
+
+        [Test]
+        public void NoOperator()
+        {
+            var ex = Assert.Throws<NullReferenceException>(() => ParseInput("22"));
+            Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
         }
     }
 }

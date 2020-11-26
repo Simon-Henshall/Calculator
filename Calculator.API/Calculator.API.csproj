@@ -167,6 +167,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CalculationModel.cs" />
+    <Compile Include="Models\RequestModels\InputModel.cs" />
     <Compile Include="Models\RequestModels\RequestCalculationModel.cs" />
     <Compile Include="Models\ResponseModels\BadRequestResponseModel.cs" />
     <Compile Include="Models\ResponseModels\ResponseCalculationModel.cs" />
