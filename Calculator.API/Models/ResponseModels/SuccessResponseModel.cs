@@ -2,21 +2,13 @@ using System.Net;
 
 namespace Calculator.API.Models
 {
-    public class SuccessResponseModel<T> : ResponseModel
+    public class SuccessResponseModel: ResponseModel
     {
-        public object Result { get; internal set; }
-
-        public SuccessResponseModel(T result)
+        public SuccessResponseModel(dynamic result)
         {
             Result = result;
-            Messages.Add("Resource found");
             StatusCode = HttpStatusCode.OK;
             StatusMessage = StatusCode.ToString();
-        }
-
-        public SuccessResponseModel(int result)
-        {
-            Result = result;
         }
     }
 }

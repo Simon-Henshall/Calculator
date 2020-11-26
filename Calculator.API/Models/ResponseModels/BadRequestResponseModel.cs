@@ -9,7 +9,6 @@ namespace Calculator.API.Models
 
         public BadRequestResponseModel()
         {
-            Messages.Add("Bad request");
             StatusCode = HttpStatusCode.BadRequest;
             StatusMessage = StatusCode.ToString();
             ModelErrors = new List<KeyValuePair<string, string>>();
