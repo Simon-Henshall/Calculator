@@ -1,9 +1,9 @@
 ﻿using Calculator.API.Models;
+using Serilog;
 using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 
@@ -45,14 +45,17 @@ namespace Calculator.API.Controllers
                 }
                 catch (Exception ex)
                 {
+                    Log.Error("Exception was thrown", ex);
                     return Content(HttpStatusCode.BadRequest, ex);
                 }
             }
+            Log.Error("A bad request was provided", badRequestResponse);
             return Content(HttpStatusCode.BadRequest, badRequestResponse);
         }
 
         public IHttpActionResult ParseInput(InputModel input)
         {
+            Log.Information("Input was", input);
 
             string[] components = Regex.Split(input.Input, @"([0-9]+)([\+\-X\/]+)([0-9]+)");
             // ToDo: Improve this to handle multiple inputs
@@ -63,7 +66,9 @@ namespace Calculator.API.Controllers
                 Operand2 = components.ElementAtOrDefault(3) != null ? int.Parse(components[3]) : 0,
             };
 
-           return Calculate(parsedInput);
+            Log.Information("Parsed input was", parsedInput);
+
+            return Calculate(parsedInput);
         }
     }
 }

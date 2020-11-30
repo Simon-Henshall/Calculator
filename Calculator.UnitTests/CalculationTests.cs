@@ -1,8 +1,8 @@
 using Calculator.API.Controllers;
 using Calculator.API.Models;
 using FizzWare.NBuilder;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using System;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -13,9 +13,8 @@ namespace Calculator.UnitTests
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Blocker Code Smell", "S2187:TestCases should contain tests", Justification = "<Pending>")]
     public class BaseTest
     {
-        // ToDo: Implement logging
-        private ILogger _logger;
-
+        public readonly ILogger _logger; 
+        
         public dynamic ParseInput(string input)
         {
             var calculator = new CalculateController()
@@ -59,10 +58,12 @@ namespace Calculator.UnitTests
 
     [TestFixture]
     public class SuccessTests : BaseTest
-    {
+    {   
         [Test]
         public void TestAddition()
         {
+            _logger.LogInformation("Testing addition");
+
             var random = new Random();
             var testedSymbol = "+";
 
@@ -74,6 +75,8 @@ namespace Calculator.UnitTests
         [Test]
         public void TestSubtraction()
         {
+            _logger.LogInformation("Testing subtraction");
+
             var random = new Random();
             var testedSymbol = "-";
 
@@ -85,6 +88,8 @@ namespace Calculator.UnitTests
         [Test]
         public void TestMultiplication()
         {
+            _logger.LogInformation("Testing multiplication");
+
             var random = new Random();
             var testedSymbol = "X";
 
@@ -96,6 +101,8 @@ namespace Calculator.UnitTests
         [Test]
         public void TestDivision()
         {
+            _logger.LogInformation("Testing division"); 
+            
             var random = new Random();
             var testedSymbol = "/";
 
@@ -111,6 +118,8 @@ namespace Calculator.UnitTests
         [Test]
         public void NoOperand()
         {
+            _logger.LogInformation("Testing no operand");
+
             var ex = Assert.Throws<NullReferenceException>(() => ParseInput("X"));
             Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
         }
@@ -118,6 +127,8 @@ namespace Calculator.UnitTests
         [Test]
         public void NoOperator()
         {
+            _logger.LogInformation("Testing no operator");
+
             var ex = Assert.Throws<NullReferenceException>(() => ParseInput("22"));
             Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
         }
