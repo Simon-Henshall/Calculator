@@ -35,7 +35,7 @@ namespace Calculator.UnitTests
             return result;
         }
         
-        public dynamic Calculate(int operand1, string symbol, int operand2)
+        public double Calculate(int operand1, string symbol, int operand2)
         {
             var testData = Builder<RequestCalculationModel>
                 .CreateNew()
@@ -61,14 +61,15 @@ namespace Calculator.UnitTests
     public class SuccessTests : BaseTest
     {
         [Test]
-        public void TestAddition()
+        [TestCase(1, "+", 1, 2)]
+        [TestCase(11, "+", 0, 11)]
+        [TestCase(-3, "+", -4, -7)]
+        [TestCase(5, "+", -6, -1)]
+        [TestCase(-5, "+", 6, 1)]
+        public void TestAddition(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var random = new Random();
-            var testedSymbol = "+";
-
-            var result = Calculate(random.Next(), testedSymbol, random.Next());
-            Assert.That(result, Is.TypeOf<double>());
-            Assert.That(result % 1 == 0);
+            var result = Calculate(operand1, symbol, operand2);
+            Assert.AreEqual(expectedResult, result);
         }
 
         [Test]
@@ -109,17 +110,12 @@ namespace Calculator.UnitTests
     public class FailureTests : BaseTest
     {
         [Test]
-        public void NoOperand()
+        [TestCase("X", "Object reference not set to an instance of an object.")]
+        [TestCase("22", "Object reference not set to an instance of an object.")]
+        public void InvalidInputs(string input, string msg)
         {
-            var ex = Assert.Throws<NullReferenceException>(() => ParseInput("X"));
-            Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
-        }
-
-        [Test]
-        public void NoOperator()
-        {
-            var ex = Assert.Throws<NullReferenceException>(() => ParseInput("22"));
-            Assert.That(ex.Message, Is.EqualTo("Object reference not set to an instance of an object."));
+            var ex = Assert.Throws<NullReferenceException>(() => ParseInput(input));
+            Assert.That(ex.Message, Is.EqualTo(msg));
         }
     }
 }

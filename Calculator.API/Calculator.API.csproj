@@ -166,6 +166,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\CalculatorLogic.cs" />
     <Compile Include="Models\CalculationModel.cs" />
     <Compile Include="Models\RequestModels\InputModel.cs" />
     <Compile Include="Models\RequestModels\RequestCalculationModel.cs" />
@@ -173,7 +174,6 @@
     <Compile Include="Models\ResponseModels\ResponseCalculationModel.cs" />
     <Compile Include="Models\ResponseModels\ResponseModel.cs" />
     <Compile Include="Models\ResponseModels\SuccessResponseModel.cs" />
-    <Compile Include="Models\SymbolsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

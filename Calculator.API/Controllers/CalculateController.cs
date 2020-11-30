@@ -25,21 +25,7 @@ namespace Calculator.API.Controllers
             {
                 try
                 {
-                    switch (currentOperation.Symbol)
-                    {
-                        case Symbols.Plus:
-                            result = currentOperation.Operand1 + currentOperation.Operand2;
-                            break;
-                        case Symbols.Minus:
-                            result = currentOperation.Operand1 - currentOperation.Operand2;
-                            break;
-                        case Symbols.Times:
-                            result = currentOperation.Operand1 * currentOperation.Operand2;
-                            break;
-                        case Symbols.Divide:
-                            result = (double)currentOperation.Operand1 / currentOperation.Operand2;
-                            break;
-                    }
+                    var result = Logic.CalculatorLogic.Calculate(currentOperation.Operand1, currentOperation.Symbol, currentOperation.Operand2);
                     var successResponse = new SuccessResponseModel(result);
                     return Ok(successResponse);
                 }
