@@ -5,17 +5,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http;
-using System.Web.Http.Results;
 
 namespace Calculator.API.Controllers
 {
     public class CalculateController : ApiController
     {
-        private double result;
-
         [SwaggerResponse(HttpStatusCode.OK, Description = "A response model", Type = typeof(ResponseModel))]
         [SwaggerResponse(HttpStatusCode.BadRequest, Description = "Invalid request model", Type = typeof(RequestCalculationModel))]
         [Route("api/Calculate")]
