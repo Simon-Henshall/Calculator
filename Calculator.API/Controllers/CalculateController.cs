@@ -1,11 +1,14 @@
 ﻿using Calculator.API.Models;
 using Swashbuckle.Swagger.Annotations;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace Calculator.API.Controllers
 {
@@ -39,9 +42,9 @@ namespace Calculator.API.Controllers
 
         public IHttpActionResult ParseInput(InputModel input)
         {
-
             string[] components = Regex.Split(input.Input, @"([0-9]+)([\+\-X\/]+)([0-9]+)");
             // ToDo: Improve this to handle multiple inputs
+
             var parsedInput = new RequestCalculationModel
             {
                 Operand1 = components.ElementAtOrDefault(1) != null ? int.Parse(components[1]) : 0,
@@ -49,7 +52,22 @@ namespace Calculator.API.Controllers
                 Operand2 = components.ElementAtOrDefault(3) != null ? int.Parse(components[3]) : 0,
             };
 
-           return Calculate(parsedInput);
+            // Validate the input
+            ValidationContext vc = new ValidationContext(parsedInput);
+            ICollection<ValidationResult> results = new List<ValidationResult>();
+            bool isValid = Validator.TryValidateObject(parsedInput, vc, results, true);
+            if (isValid && !string.IsNullOrEmpty(parsedInput.Symbol))
+            {
+                // Process the input
+                return Calculate(parsedInput);
+                
+            }
+            else
+            {
+                var badRequestResponse = new BadRequestResponseModel();
+                badRequestResponse.CustomMessage = "Unable to validate request model";
+                return Content(HttpStatusCode.BadRequest, badRequestResponse);
+            }
         }
     }
 }

@@ -23,15 +23,28 @@ namespace Calculator.API.Logic
                 case CalculatorSymbols.Times:
                     return operand1 * operand2;
                 case CalculatorSymbols.Divide:
-                    return (double)operand1 / operand2;
+                    return operand1 / operand2;
                 default:
-                    throw new NotImplementedException($"{symbol} is not currently supported");
+                    throw new InvalidSymbolException($"{symbol} is not currently supported");
             }
-
         }
     }
 
-    public class SymbolInvalidException : Exception
+    public class InvalidSymbolException : Exception
     {
+        public CalculatorSymbols Symbol { get; }
+        
+        public InvalidSymbolException(string message) : base(message)
+        {
+        }
+
+        public InvalidSymbolException(string message, Exception inner) : base(message, inner)
+        {
+        }
+
+        public InvalidSymbolException(string message, CalculatorSymbols symbol): this(message)
+        {
+            Symbol = symbol;
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace Calculator.UnitTests
         // ToDo: Implement logging
         private ILogger _logger;
 
-        public dynamic ParseInput(string input)
+        public string ParseInput(string input)
         {
             var calculator = new CalculateController()
             {
@@ -29,8 +29,8 @@ namespace Calculator.UnitTests
                 Input = input
             };
 
-            var request = calculator.ParseInput(testInput) as OkNegotiatedContentResult<SuccessResponseModel>;
-            var result = request.Content.Result;
+            var request = calculator.ParseInput(testInput) as NegotiatedContentResult<BadRequestResponseModel>;
+            var result = request.Content.CustomMessage;
 
             return result;
         }
@@ -62,60 +62,98 @@ namespace Calculator.UnitTests
     {
         [Test]
         [TestCase(1, "+", 1, 2)]
-        [TestCase(11, "+", 0, 11)]
-        [TestCase(-3, "+", -4, -7)]
-        [TestCase(5, "+", -6, -1)]
-        [TestCase(-5, "+", 6, 1)]
+        [TestCase(1, "+", 11, 12)]
+        [TestCase(1, "+", -1, 0)]
+        [TestCase(11, "+", 1, 12)]
+        [TestCase(11, "+", 11, 22)]
+        [TestCase(-1, "+", 1, 0)]
+        [TestCase(-1, "+", -1, -2)]
+        [TestCase(-1, "+", -11, -12)]
+        [TestCase(-11, "+", -1, -12)]
+        [TestCase(-11, "+", -11, -22)]
+        [TestCase(0, "+", 1, 1)]
+        [TestCase(1, "+", 0, 1)]
         public void TestAddition(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var result = Calculate(operand1, symbol, operand2);
+            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
             Assert.AreEqual(expectedResult, result);
         }
 
         [Test]
-        public void TestSubtraction()
+        [TestCase(1, "-", 1, 0)]
+        [TestCase(1, "-", 11, -10)]
+        [TestCase(1, "-", -1, 2)]
+        [TestCase(11, "-", 1, 10)]
+        [TestCase(11, "-", 11, 0)]
+        [TestCase(-1, "-", 1, -2)]
+        [TestCase(-1, "-", -1, 0)]
+        [TestCase(-1, "-", -11, 10)]
+        [TestCase(-11, "-", -1, -10)]
+        [TestCase(-11, "-", -11, 0)]
+        [TestCase(0, "-", 1, -1)]
+        [TestCase(1, "-", 0, 1)]
+        public void TestSubtraction(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var random = new Random();
-            var testedSymbol = "-";
-
-            var result = Calculate(random.Next(), testedSymbol, random.Next());
-            Assert.That(result, Is.TypeOf<double>());
-            Assert.That(result % 1 == 0);
+            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            Assert.AreEqual(expectedResult, result);
         }
 
         [Test]
-        public void TestMultiplication()
+        [TestCase(1, "X", 1, 1)]
+        [TestCase(1, "X", 11, 11)]
+        [TestCase(1, "X", -1, -1)]
+        [TestCase(11, "X", 1, 11)]
+        [TestCase(11, "X", 11, 121)]
+        [TestCase(-1, "X", 1, -1)]
+        [TestCase(-1, "X", -1, 1)]
+        [TestCase(-1, "X", -11, 11)]
+        [TestCase(-11, "X", -1, 11)]
+        [TestCase(-11, "X", -11, 121)]
+        [TestCase(0, "X", 1, 0)]
+        [TestCase(1, "X", 0, 0)]
+        public void TestMultiplication(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var random = new Random();
-            var testedSymbol = "X";
-
-            var result = Calculate(random.Next(), testedSymbol, random.Next());
-            Assert.That(result, Is.TypeOf<double>());
-            Assert.That(result % 1 == 0);
+            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            Assert.AreEqual(expectedResult, result);
         }
 
         [Test]
-        public void TestDivision()
+        [TestCase(1, "/", 1, 1)]
+        [TestCase(1, "/", 11, 0)]
+        [TestCase(1, "/", -1, -1)]
+        [TestCase(11, "/", 1, 11)]
+        [TestCase(11, "/", 11, 1)]
+        [TestCase(-1, "/", 1, -1)]
+        [TestCase(-1, "/", -1, 1)]
+        [TestCase(-1, "/", -11, 0)]
+        [TestCase(-11, "/", -1, 11)]
+        [TestCase(-11, "/", -11, 1)]
+        [TestCase(0, "/", 1, 0)]
+        public void TestDivision(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var random = new Random();
-            var testedSymbol = "/";
-
-            var result = Calculate(random.Next(), testedSymbol, random.Next());
-            Assert.That(result, Is.TypeOf<double>());
-            Assert.That(result % 1 != 0);
-            
+            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            Assert.AreEqual(expectedResult, result);
         }
     }
     [TestFixture]
     public class FailureTests : BaseTest
     {
         [Test]
-        [TestCase("X", "Object reference not set to an instance of an object.")]
-        [TestCase("22", "Object reference not set to an instance of an object.")]
+        [TestCase("X", "Unable to validate request model")]
+        [TestCase("22", "Unable to validate request model")]
         public void InvalidInputs(string input, string msg)
         {
-            var ex = Assert.Throws<NullReferenceException>(() => ParseInput(input));
-            Assert.That(ex.Message, Is.EqualTo(msg));
+            var result = ParseInput(input);
+            Assert.That(result, Is.EqualTo(msg));
+        }
+
+        [Test] // Only integers produce a DivideByZeroException - https://stackoverflow.com/a/44258269/2341603
+        [TestCase(1, "/", 0, "Attempted to divide by zero.")]
+        [TestCase(-1, "/", 0, "Attempted to divide by zero.")]
+        public void DivisionByZero(int operand1, string symbol, int operand2, string expectedResult)
+        {
+            var ex = Assert.Throws<DivideByZeroException>(() => API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2));
+            Assert.That(ex.Message, Is.EqualTo(expectedResult));
         }
     }
 }
