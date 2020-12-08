@@ -37,9 +37,9 @@ namespace Calculator.API.Logic
         }
     }
 
-    public class TooManySymbolsException : Exception
+    public class InvalidNumberOfSymbolsException : Exception
     {
-        public TooManySymbolsException(string message) : base(message)
+        public InvalidNumberOfSymbolsException(string message) : base(message)
         {
         }
     }

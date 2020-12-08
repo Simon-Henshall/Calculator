@@ -1,4 +1,5 @@
 using Calculator.API.Controllers;
+using Calculator.API.Logic;
 using Calculator.API.Models;
 using FizzWare.NBuilder;
 using NUnit.Framework;
@@ -139,12 +140,12 @@ namespace Calculator.UnitTests
     public class FailureTests : BaseTest
     {
         [Test]
-        [TestCase("X", "Unable to validate request model")]
-        [TestCase("22", "Unable to validate request model")]
+        [TestCase("X", "The number of symbols don't match the expected input")]
+        [TestCase("22", "The number of symbols don't match the expected input")]
         public void InvalidInputs(string input, string msg)
         {
-            var result = ParseInput(input);
-            Assert.That(result, Is.EqualTo(msg));
+            var ex = Assert.Throws<InvalidNumberOfSymbolsException>(() => ParseInput(input));
+            Assert.That(ex.Message, Is.EqualTo(msg));
         }
 
         [Test] // Only integers produce a DivideByZeroException - https://stackoverflow.com/a/44258269/2341603

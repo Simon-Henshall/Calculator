@@ -56,7 +56,7 @@ namespace Calculator.API.Controllers
             if (components.Length % 2 == 0)
             {
                 // There can never be an even number of components
-                throw new TooManySymbolsException("The number of symbols don't match the expected input");
+                throw new InvalidNumberOfSymbolsException("The number of symbols don't match the expected input");
             }
 
             // Process the input
