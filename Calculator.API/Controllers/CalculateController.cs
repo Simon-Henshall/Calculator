@@ -1,4 +1,5 @@
-﻿using Calculator.API.Models;
+﻿using Calculator.API.Logic;
+using Calculator.API.Models;
 using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace Calculator.API.Controllers
 {
@@ -36,34 +38,67 @@ namespace Calculator.API.Controllers
             return Content(HttpStatusCode.BadRequest, badRequestResponse);
         }
 
+        [SwaggerResponse(HttpStatusCode.OK, Description = "A response model", Type = typeof(ResponseModel))]
+        [SwaggerResponse(HttpStatusCode.BadRequest, Description = "Invalid request model", Type = typeof(InputModel))]
+        [Route("api/ParseInput")]
+        [HttpPost]
         public IHttpActionResult ParseInput(InputModel input)
         {
+            // Parse the input into an array of string componetns
             string[] components = Regex.Split(input.Input, @"([0-9]+)([\+\-X\/]+)([0-9]+)");
-            // ToDo: Improve this to handle multiple inputs
+            
+            // Remove the first and last (blank) elements from the array
+            components = components.Skip(1).ToArray();
+            components = components.Take(components.Count() - 1).ToArray();
 
-            var parsedInput = new RequestCalculationModel
+            // Assuming that we follow a "[operand]([operator][operand] * N)" pattern then it is (2N + 1)
+            // Assuming that negative numbers are not allowed
+            if (components.Length % 2 == 0)
             {
-                Operand1 = components.ElementAtOrDefault(1) != null ? int.Parse(components[1]) : 0,
-                Symbol = components.ElementAtOrDefault(2) != null ? components[2] : "",
-                Operand2 = components.ElementAtOrDefault(3) != null ? int.Parse(components[3]) : 0,
-            };
+                // There can never be an even number of components
+                throw new TooManySymbolsException("The number of symbols don't match the expected input");
+            }
 
-            // Validate the input
-            ValidationContext vc = new ValidationContext(parsedInput);
-            ICollection<ValidationResult> results = new List<ValidationResult>();
-            bool isValid = Validator.TryValidateObject(parsedInput, vc, results, true);
-            if (isValid && !string.IsNullOrEmpty(parsedInput.Symbol))
+            // Process the input
+            int i = 0;
+            double finalResult = 0;
+            while (i < components.Length - 2) // We process three at once, so subtract two from the loop
             {
-                // Process the input
-                return Calculate(parsedInput);
-                
+                var parsedInput = new RequestCalculationModel
+                {
+                    Operand1 = components.ElementAtOrDefault(i) != null ? int.Parse(components[i]) : 0,
+                    Symbol = components.ElementAtOrDefault(i + 1) != null ? components[i + 1] : "",
+                    Operand2 = components.ElementAtOrDefault(i + 2) != null ? int.Parse(components[i + 2]) : 0,
+                };
+
+                // Validate the input
+                ValidationContext vc = new ValidationContext(parsedInput);
+                ICollection<ValidationResult> results = new List<ValidationResult>();
+                bool isValid = Validator.TryValidateObject(parsedInput, vc, results, true);
+
+                // Valid input
+                if (isValid && !string.IsNullOrEmpty(parsedInput.Symbol))
+                {
+                    var immediateResult = Calculate(parsedInput) as OkNegotiatedContentResult<SuccessResponseModel>;
+                    if (immediateResult != null)
+                    {
+                        finalResult += immediateResult.Content.Result;
+                    }
+                }
+                // Invalid input
+                else
+                {
+                    var badRequestResponse = new BadRequestResponseModel();
+                    badRequestResponse.CustomMessage = "Unable to validate request model";
+                    return Content(HttpStatusCode.BadRequest, badRequestResponse);
+                }
+
+                // Incremeber the count in sets of 2
+                i += 2;
             }
-            else
-            {
-                var badRequestResponse = new BadRequestResponseModel();
-                badRequestResponse.CustomMessage = "Unable to validate request model";
-                return Content(HttpStatusCode.BadRequest, badRequestResponse);
-            }
+
+            // Return the final calculation
+            return Ok(finalResult);
         }
     }
 }

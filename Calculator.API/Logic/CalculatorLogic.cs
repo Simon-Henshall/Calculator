@@ -32,19 +32,15 @@ namespace Calculator.API.Logic
 
     public class InvalidSymbolException : Exception
     {
-        public CalculatorSymbols Symbol { get; }
-        
         public InvalidSymbolException(string message) : base(message)
         {
         }
+    }
 
-        public InvalidSymbolException(string message, Exception inner) : base(message, inner)
+    public class TooManySymbolsException : Exception
+    {
+        public TooManySymbolsException(string message) : base(message)
         {
-        }
-
-        public InvalidSymbolException(string message, CalculatorSymbols symbol): this(message)
-        {
-            Symbol = symbol;
         }
     }
 }
