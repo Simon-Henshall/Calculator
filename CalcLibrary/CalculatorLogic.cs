@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Calculator.API.Logic
+namespace CalcLibrary
 {
     public class CalculatorSymbols
     {

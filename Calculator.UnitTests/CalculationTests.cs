@@ -1,6 +1,6 @@
 using Calculator.API.Controllers;
-using Calculator.API.Logic;
 using Calculator.API.Models;
+using CalcLibrary;
 using FizzWare.NBuilder;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
@@ -76,7 +76,7 @@ namespace Calculator.UnitTests
         [TestCase(1, "+", 0, 1)]
         public void TestAddition(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            var result = CalculatorLogic.Calculate(operand1, symbol, operand2);
             Assert.AreEqual(expectedResult, result);
         }
 
@@ -95,7 +95,7 @@ namespace Calculator.UnitTests
         [TestCase(1, "-", 0, 1)]
         public void TestSubtraction(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            var result = CalculatorLogic.Calculate(operand1, symbol, operand2);
             Assert.AreEqual(expectedResult, result);
         }
 
@@ -114,7 +114,7 @@ namespace Calculator.UnitTests
         [TestCase(1, "X", 0, 0)]
         public void TestMultiplication(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            var result = CalculatorLogic.Calculate(operand1, symbol, operand2);
             Assert.AreEqual(expectedResult, result);
         }
 
@@ -132,7 +132,7 @@ namespace Calculator.UnitTests
         [TestCase(0, "/", 1, 0)]
         public void TestDivision(int operand1, string symbol, int operand2, double expectedResult)
         {
-            var result = API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2);
+            var result = CalculatorLogic.Calculate(operand1, symbol, operand2);
             Assert.AreEqual(expectedResult, result);
         }
     }
@@ -154,7 +154,7 @@ namespace Calculator.UnitTests
         [TestCase(-1, "/", 0, "Attempted to divide by zero.")]
         public void DivisionByZero(int operand1, string symbol, int operand2, string expectedResult)
         {
-            var ex = Assert.Throws<DivideByZeroException>(() => API.Logic.CalculatorLogic.Calculate(operand1, symbol, operand2));
+            var ex = Assert.Throws<DivideByZeroException>(() => CalculatorLogic.Calculate(operand1, symbol, operand2));
             Assert.That(ex.Message, Is.EqualTo(expectedResult));
         }
     }

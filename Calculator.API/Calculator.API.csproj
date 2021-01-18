@@ -186,7 +186,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Logic\CalculatorLogic.cs" />
     <Compile Include="Models\RequestModels\InputModel.cs" />
     <Compile Include="Models\RequestModels\RequestCalculationModel.cs" />
     <Compile Include="Models\ResponseModels\BadRequestResponseModel.cs" />
@@ -206,7 +205,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="Areas\HelpPage\Views\_ViewStart.cshtml" />
     <Content Include="Areas\HelpPage\Views\Web.config" />
@@ -229,6 +227,12 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CalcLibrary\CalcLibrary.csproj">
+      <Project>{07281bd6-7f1a-4ed4-ad7c-2171171886ce}</Project>
+      <Name>CalcLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

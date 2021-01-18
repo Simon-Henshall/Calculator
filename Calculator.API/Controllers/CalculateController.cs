@@ -1,5 +1,5 @@
-﻿using Calculator.API.Logic;
-using Calculator.API.Models;
+﻿using Calculator.API.Models;
+using CalcLibrary;
 using log4net;
 using Swashbuckle.Swagger.Annotations;
 using System;
